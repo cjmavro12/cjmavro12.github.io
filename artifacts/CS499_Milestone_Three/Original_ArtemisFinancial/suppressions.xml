@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <!-- Use only for vetted false positives with justification -->
+    <!--
+    <suppress>
+        <notes><![CDATA[Justification: false positive for transitive dependency not in execution path.]]></notes>
+        <cve>CVE-YYYY-XXXX</cve>
+        <gav regex="true">^groupId:artifactId:version$</gav>
+    </suppress>
+    -->
+</suppressions>

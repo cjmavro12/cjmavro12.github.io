@@ -1,0 +1,22 @@
+CS 499 Milestone Three verification — September 27, 2026
+
+EXECUTED AND PASSED
+- Java 17.0.20 compiled MerkleTree, MerkleDemo, and MerkleCoreChecks.
+- Core suite: 16,687 assertions/checks passed. These are checks within an executable regression suite, not 16,687 separate JUnit methods.
+- Independent expected root vectors generated with Python hashlib for empty, single, odd, even, and Unicode collections matched Java output.
+- Every leaf of sizes 1 through 128 verified; modified records failed.
+- Malformed, truncated, extended, and tampered proofs were rejected.
+- Duplicate-value, count-ambiguity, byte-limit, malformed-Unicode, and 4096-leaf cases passed.
+- Demo verified the original sample and rejected its changed value.
+- Operation counts are in evidence/core-check-output.txt.
+
+NOT EXECUTED TO COMPLETION
+- Maven wrapper attempted dependency download; repo.maven.apache.org failed with UnknownHostException in the test environment.
+- Full Spring Boot compilation, JUnit adapter, application context, and MockMvc HTTP tests are therefore not verified here.
+- Local HTTPS startup, certificate trust, and Dependency-Check vulnerability scan have not been run.
+- No user-side run of this new enhancement has been confirmed yet.
+
+NEXT LOCAL CHECKS
+Run scripts/run-core-checks.ps1, then .\mvnw.cmd test and .\mvnw.cmd spring-boot:run.
+Follow README.md to verify true/false API responses and HTTPS configuration.
+Run .\mvnw.cmd -Psecurity-audit verify before describing dependency security results.

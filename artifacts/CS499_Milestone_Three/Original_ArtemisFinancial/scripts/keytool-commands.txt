@@ -1,0 +1,5 @@
+# Self-signed cert + PKCS12 keystore for localhost
+keytool -genkeypair   -alias artemis   -keyalg RSA   -keysize 2048   -validity 365   -dname "CN=localhost, OU=Global Rain, O=Artemis Financial, L=Charlotte, ST=NC, C=US"   -storetype PKCS12   -keystore keystore.p12   -storepass CHANGEIT_PASSWORD   -keypass CHANGEIT_PASSWORD
+
+# Export public certificate (CER) for your report screenshot
+keytool -exportcert   -alias artemis   -keystore keystore.p12   -storetype PKCS12   -storepass CHANGEIT_PASSWORD   -file server.cer

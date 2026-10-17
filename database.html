@@ -1,0 +1,122 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="CJ Mavrogeorge’s CS 499 computer science portfolio: software design, algorithms, databases, and professional self-assessment."><title>Grazioso Salvare Rescue Dashboard | CJ Mavrogeorge</title><link rel="stylesheet" href="styles.css"></head><body><a class="skip" href="#main">Skip to content</a><header><div class="wrap"><a class="brand" href="index.html">CJ MAVROGEORGE</a><nav aria-label="Main navigation"><a href="index.html">Self-assessment</a><a href="weight-app.html">Weight App</a><a href="artemis.html">Artemis</a><a href="database.html" aria-current="page">Database</a><a href="code-review.html">Code review</a></nav></div></header><main id="main" class="wrap"><section class="hero"><div class="eyebrow">Databases</div><h1>Grazioso Salvare Rescue Dashboard</h1><p class="lead">The CS 340 dashboard enhanced with validated database operations, server-side queries, and bounded pages.</p></section><div class="toc"><a href="#narrative">Enhancement narrative</a><a href="#source">Original and enhanced source</a><a href="#evidence">Testing and setup</a></div><a class="button" href="downloads/rescue-dashboard.zip" download>Download original and enhanced code</a><aside class="note">The public notebook has its database credentials removed and saved outputs cleared. The enhanced application uses environment settings.</aside><article id="narrative" class="prose"><h2>Enhancement narrative</h2><h3>Artifact and Purpose</h3><p>My database artifact is the Grazioso Salvare animal rescue dashboard from CS 340. I originally created it for the CS 340 course project and enhanced it for the database portion of my CS 499 capstone. The project uses Python and MongoDB to help users find animals that match water, mountain, and disaster rescue criteria. The submission includes the original notebook and CRUD module, along with the enhanced application. The original application logic is preserved for comparison; credentials and saved notebook outputs are removed from the public copy.</p><h3>Changes and Skills Demonstrated</h3><p>I selected this artifact because it connects a database to a practical dashboard. The original version loaded all records into a data frame, included database credentials in the code, and used column positions to build the map. The enhancement reads connection settings from environment variables, requests only the fields needed for a page, and returns ten records at a time in the dashboard. The map uses field names and a stable database record ID. The notebook is preserved, and the enhanced version also includes a standalone Dash application and a sample-data mode.</p><p>The database layer now validates required fields, animal types, age values, and coordinates. It rejects unsupported fields and query objects passed as record values. Updates and deletes require one MongoDB record ID, which prevents a caller from accidentally passing an unrestricted bulk query. Database failures raise a separate exception instead of appearing to be an empty result. Operation logs record the operation and outcome without including credentials or animal records. These changes demonstrate defensive programming and a more careful approach to database access.</p><p>MongoDB aggregation now calculates breed totals and rescue-category counts. The dashboard chart displays the top 20 breeds for the selected filter. A compound index supports animal type, sex, and age filters, while breed matching remains a regular-expression filter. The package includes a script that compares an indexed query with a collection scan using explain statistics. MongoDB documentation explains how examined documents, examined keys, and execution statistics help assess query plans (MongoDB, n.d.). No live performance improvement is claimed because the comparison still needs to run on a real MongoDB server.</p><h3>Course Outcomes and Plan Alignment</h3><p>This enhancement follows my Module One plan to improve configuration, validation, error handling, database queries, indexes, and testing. It provides evidence toward the outcomes for designing computing solutions and using well-founded techniques by moving filtering and aggregation into the database. It supports the security outcome through restricted updates, validated input, and external connection settings. The narrative and setup guide support the communication outcome by explaining how to run the application and what has been verified. I have not changed the planned outcomes; the remaining work is verification and documentation of the final results.</p><h3>Testing and Reflection</h3><p>The automated run passed 13 tests covering CRUD behavior, validation, rescue filters, pagination, aggregation, map selection, error handling, and a Dash callback request. These tests use an in-memory MongoDB substitute. One additional live integration test was skipped because no MongoDB server was configured. The package includes that test and an explain-plan script so the remaining checks can be completed on a development server. Authentication, real query performance, and manual browser behavior still need to be verified before I call the enhancement fully tested.</p><p>This work helped me connect database design choices to what a user sees in the dashboard. One challenge was keeping the original rescue rules while changing how records are requested and displayed. Another was separating application tests from claims about a real database. Passing tests with sample records is useful, but it does not prove that an index improves performance or that server permissions are correct. I also had to account for missing coordinates and make sure a selected row stayed connected to the correct map record. My next steps are to complete the live database checks and address any issues they reveal.</p><h3>Reference</h3><p>MongoDB. (n.d.). Interpret explain plan results. https://www.mongodb.com/docs/manual/tutorial/analyze-query-plan/</p></article><section id="source"><h2>Original and enhanced source</h2><p>Expand a section to browse files. Source files and notebooks can be downloaded individually; the ZIP includes both versions.</p><details><summary>Enhanced ProjTwo</summary><ul class="filelist"><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/.env.example">.env.example</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/.gitignore">.gitignore</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/ProjectTwoDashboard_Enhanced.ipynb">ProjectTwoDashboard_Enhanced.ipynb</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/README.md">README.md</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/TEST_RESULTS.txt">TEST_RESULTS.txt</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/animal_shelter.py">animal_shelter.py</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/benchmark.py">benchmark.py</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/dashboard.py">dashboard.py</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/demo_data.py">demo_data.py</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/requirements.txt">requirements.txt</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/setup_indexes.py">setup_indexes.py</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/tests/test_integration.py">tests/test_integration.py</a></li><li><a href="artifacts/CS499_Milestone_Four/Enhanced_ProjTwo/tests/test_shelter.py">tests/test_shelter.py</a></li></ul></details><details><summary>Original ProjTwo</summary><ul class="filelist"><li><a href="artifacts/CS499_Milestone_Four/Original_ProjTwo/CRUD_Python_Module (2).py">CRUD_Python_Module (2).py</a></li><li><a href="artifacts/CS499_Milestone_Four/Original_ProjTwo/ProjectTwoDashboard.ipynb">ProjectTwoDashboard.ipynb</a></li></ul></details></section><section id="evidence"><h2>Testing and setup evidence</h2><details><summary>Enhanced_ProjTwo/README.md</summary><pre># CS 499 Milestone Four — Database Enhancement
+CJ Mavrogeorge
+
+## Start the sample dashboard (Windows PowerShell)
+Open a terminal in Enhanced_ProjTwo. Python 3.11 or newer is recommended.
+
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe dashboard.py --demo
+```
+Open http://127.0.0.1:8050. Stop with Ctrl+C. On macOS/Linux use python3 to create
+the environment and .venv/bin/python for subsequent commands.
+The demo uses 80 synthetic records in memory. Changes disappear on exit. It does
+not prove a connection to the AAC database. Map tiles require internet access.
+
+## Use an existing MongoDB AAC database
+Set these environment variables in the same PowerShell window (use your actual
+connection URI and database/collection). The example below targets a local server.
+This program does not automatically load .env files.
+
+```powershell
+$env:MONGODB_URI = &#x27;mongodb://localhost:27017&#x27;
+$env:MONGODB_DATABASE = &#x27;aac&#x27;
+$env:MONGODB_COLLECTION = &#x27;animals&#x27;
+.\.venv\Scripts\python.exe dashboard.py
+```
+Use a read-only account for viewing and appropriate separate permissions for
+maintenance. Credentials belong in environment settings, never source control.
+The original AAC dataset, MongoDB server, and historical Apporto service are not
+included. Original_ProjTwo preserves the original code with credentials removed and
+saved notebook outputs cleared. The enhanced application does not import it.
+
+## Index setup and measurement
+Creating an index changes database metadata. Run it intentionally on your own
+configured database using a maintenance account:
+
+```powershell
+.\.venv\Scripts\python.exe setup_indexes.py
+.\.venv\Scripts\python.exe benchmark.py
+```
+benchmark_results.json compares a forced collection scan with the named compound
+index for the same water-rescue query. It records returned records, examined
+records/keys, and execution milliseconds. This is a controlled plan comparison,
+not a full dashboard benchmark. Compare equal nReturned first. Run several times
+on representative data; caching and dataset size affect timings. No performance
+improvement has been measured in the delivered environment. The breed regex is a
+residual filter; the compound index targets animal type, sex, and age. Pagination
+uses bounded limit/skip; very deep pages still require extra server work.
+
+## Optional live integration test
+TEST_MONGODB_URI enables a test which creates a randomly named cs499_test_ database
+and removes that same database in a finally block. Use a development server and an
+account allowed to create/drop test databases. It never uses MONGODB_DATABASE.
+
+```powershell
+$env:TEST_MONGODB_URI = &#x27;mongodb://localhost:27017&#x27;
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+Remove-Item Env:TEST_MONGODB_URI
+```
+Without that variable the live test is explicitly skipped. Mock tests verify
+application behavior, not server authentication, network behavior, or query plans.
+
+## Files and behavior
+- animal_shelter.py: validated CRUD, environment settings, bounded reads, named
+  projection, aggregation, compound index and sanitized database exceptions.
+- dashboard.py: standalone Dash dashboard, rescue filters, 10-row server pages,
+  top-20 breed chart, and stable-record-ID map selection.
+- demo_data.py: labeled synthetic data; no actual shelter records.
+- tests/: mock-based behavior tests and opt-in real MongoDB test.
+- benchmark.py and setup_indexes.py: explain comparison and explicit index setup.
+- ProjectTwoDashboard_Enhanced.ipynb: optional notebook launcher.
+
+Create returns an ID string; update/delete return affected-record counts. Empty
+results are distinct from database failures. Update/delete require one MongoDB
+record ID and cannot receive bulk queries. Writes accept only named fields and
+validate values. An animal ID is not unique: multiple outcome records may refer
+to the same animal. Coordinates must be provided together. The dashboard is
+read-only; CRUD methods are available to Python callers. Logs include operation
+and outcome fields but do not include records or credentials.
+
+## Manual verification still needed
+Run against your actual MongoDB server, capture explain results, open the dashboard
+in a browser, try all filters and both page buttons, select map rows, and check
+empty/missing-coordinate behavior with representative data. Confirm authentication
+and permissions. Read the included automated test report for completed checks.
+
+## Design tradeoffs
+The original notebook loads all records into pandas. The enhancement moves
+filtering, counts and grouping to MongoDB, and transfers only the requested page.
+The chart shows the top 20 breeds and rescue categories may overlap. There is no
+claim that all data is secure or that every failure mode is tested. An authenticated
+multi-user deployment and cursor pagination would be future improvements. Dash
+DataTable is pinned for this project; it emits a future-removal warning and can be
+replaced with AG Grid during a future dependency upgrade.
+</pre></details><details><summary>Enhanced_ProjTwo/TEST_RESULTS.txt</summary><pre>test_live_crud_aggregation_and_explain (test_integration.LiveMongoTests.test_live_crud_aggregation_and_explain) ... skipped &#x27;TEST_MONGODB_URI not set; live MongoDB unverified&#x27;
+test_aggregations (test_shelter.ShelterTests.test_aggregations) ... ok
+test_callback_data (test_shelter.ShelterTests.test_callback_data) ... ok
+test_crud_one_record (test_shelter.ShelterTests.test_crud_one_record) ... ok
+test_dash_routes_and_callback (test_shelter.ShelterTests.test_dash_routes_and_callback) ... /workspace/scratch/0eede059edc5/milestone4_deps/dash/development/base_component.py:159: DeprecationWarning: 
+The dash_table.DataTable will be removed from the builtin dash components in a future major version.
+We recommend using dash-ag-grid as a replacement. Install with `pip install dash[ag-grid]`.
+
+  self._validate_deprecation()
+ok
+test_database_errors_distinct_from_empty (test_shelter.ShelterTests.test_database_errors_distinct_from_empty) ... database_operation
+ok
+test_indexes (test_shelter.ShelterTests.test_indexes) ... ok
+test_map_named_fields (test_shelter.ShelterTests.test_map_named_fields) ... ok
+test_no_bulk_mutations (test_shelter.ShelterTests.test_no_bulk_mutations) ... ok
+test_pagination (test_shelter.ShelterTests.test_pagination) ... ok
+test_query_injection (test_shelter.ShelterTests.test_query_injection) ... ok
+test_rescue_filters (test_shelter.ShelterTests.test_rescue_filters) ... ok
+test_settings (test_shelter.ShelterTests.test_settings) ... ok
+test_validation (test_shelter.ShelterTests.test_validation) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.215s
+
+OK (skipped=1)
+</pre></details></section></main><footer><div class="wrap">CJ Mavrogeorge · SNHU Computer Science · CS 499 ePortfolio</div></footer></body></html>

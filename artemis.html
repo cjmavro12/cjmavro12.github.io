@@ -1,0 +1,163 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="CJ Mavrogeorge’s CS 499 computer science portfolio: software design, algorithms, databases, and professional self-assessment."><title>Artemis Financial | CJ Mavrogeorge</title><link rel="stylesheet" href="styles.css"></head><body><a class="skip" href="#main">Skip to content</a><header><div class="wrap"><a class="brand" href="index.html">CJ MAVROGEORGE</a><nav aria-label="Main navigation"><a href="index.html">Self-assessment</a><a href="weight-app.html">Weight App</a><a href="artemis.html" aria-current="page">Artemis</a><a href="database.html">Database</a><a href="code-review.html">Code review</a></nav></div></header><main id="main" class="wrap"><section class="hero"><div class="eyebrow">Algorithms and data structures</div><h1>Artemis Financial</h1><p class="lead">The CS 305 checksum application extended with a Merkle tree and verifiable membership proofs.</p></section><div class="toc"><a href="#narrative">Enhancement narrative</a><a href="#source">Original and enhanced source</a><a href="#evidence">Testing and setup</a></div><a class="button" href="downloads/artemis.zip" download>Download original and enhanced code</a><aside class="note">The public copy omits private keystore files and generated build output. An environment variable replaces the old keystore password. The algorithm source is preserved.</aside><article id="narrative" class="prose"><h2>Enhancement narrative</h2><h3>Artifact and purpose</h3><p>My artifact is the Artemis Financial project that I created during CS 305, before this capstone course. The original Java application uses Spring Boot to return a SHA-256 checksum for a supplied value. It also includes HTTPS configuration and a dependency-checking tool. I selected it because I could build on its security purpose while showing more of what I know about algorithms and data structures. The portfolio includes the original source and a separate enhanced version, with private key material omitted from the public copy.</p><h3>What the enhancement adds</h3><p>The main addition is a Merkle tree. It hashes each record, combines neighboring hashes, and repeats that process until one tree root remains. Node objects hold the hashes and links to child nodes. Recursive methods build the tree and follow the path to a selected record. The program can return the root, create a membership proof, and check that proof against a root the verifier already trusts. The original checksum endpoint is still available.</p><p>A membership proof contains the sibling hashes needed to connect one record to the root. This lets the program check that record without receiving the entire collection again. Different prefixes distinguish record hashes from combined hashes, following a design principle described in RFC 9162 (Laurie et al., 2021). This project uses its own documented format, rather than implementing the full RFC. If a level has an odd number of nodes, it duplicates the final hash. The returned root also includes the original record count so that duplicating a final record does not make two different-sized collections appear identical.</p><p>The cost comparison is an important part of the enhancement. Building the tree requires work proportional to the total input bytes and number of records. Once it exists, creating a proof follows one path through the tree. Verification reads the selected value and that path, which grows logarithmically with the number of records. For 4,096 records, the demo reports 8,192 hash calls to build the tree and 14 to verify one value. These are operation counts, not timing measurements. The web proof endpoint still rebuilds the tree from the supplied collection, so that whole request has a linear construction cost.</p><h3>Course outcomes and testing</h3><p>This work follows my Module One plan and provides direct evidence for outcome 3 through tree construction, recursion, proof verification, and complexity analysis. It supports outcome 4 through Java implementation, reusable classes, and automated checks. It supports outcome 5 through integrity checks, input limits, and removing the old private keystore and password from the enhanced configuration. The narrative and setup instructions support outcome 2. The database artifact adds evidence of database techniques. The code review and setup documentation make the work available for shared technical review.</p><p>The Java core compiled and passed 16,687 checks. These checks cover empty collections, one record, odd and even sizes, duplicate values, Unicode, modified records, and invalid proofs. Expected roots generated separately with Python were also checked against the Java results. The full Maven build could not run because the test environment could not reach the dependency server. The Spring Boot endpoints, HTTPS setup, and dependency scan still need local verification. I am keeping those results separate from the successful core checks.</p><h3>Reflection and remaining work</h3><p>The main lesson is that an algorithm needs clear rules for unusual inputs, not just the usual case. An odd final node seems like a small detail, but it affects the root and the proof. Including the record count addresses an ambiguity caused by duplication. Another important lesson is that a matching hash does not prove that data is trustworthy by itself. The expected root must come from a trusted source. The tree also uses more memory than one checksum, so its value is in checking individual records after construction. My next steps are to run the full application locally, review the test results, and address any issues found during testing.</p><h3>References</h3><p>Laurie, B., Messeri, E., &amp; Stradling, R. (2021). Certificate transparency version 2.0 (RFC 9162). Internet Engineering Task Force. https://www.rfc-editor.org/rfc/rfc9162.html</p></article><section id="source"><h2>Original and enhanced source</h2><p>Expand a section to browse files. Source files and notebooks can be downloaded individually; the ZIP includes both versions.</p><details><summary>Enhanced ArtemisFinancial</summary><ul class="filelist"><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/.classpath">.classpath</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/.gitignore">.gitignore</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/.mvn/wrapper/MavenWrapperDownloader.java">.mvn/wrapper/MavenWrapperDownloader.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/.mvn/wrapper/maven-wrapper.jar">.mvn/wrapper/maven-wrapper.jar</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/.mvn/wrapper/maven-wrapper.properties">.mvn/wrapper/maven-wrapper.properties</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/.project">.project</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/ALGORITHM.md">ALGORITHM.md</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/README.md">README.md</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/TEST_RESULTS.txt">TEST_RESULTS.txt</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/evidence/core-check-output.txt">evidence/core-check-output.txt</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/mvnw">mvnw</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/mvnw.cmd">mvnw.cmd</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/pom.xml">pom.xml</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/scripts/run-core-checks.ps1">scripts/run-core-checks.ps1</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/scripts/run-core-checks.sh">scripts/run-core-checks.sh</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/main/java/com/snhu/controller/ApiErrors.java">src/main/java/com/snhu/controller/ApiErrors.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/main/java/com/snhu/controller/HashController.java">src/main/java/com/snhu/controller/HashController.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/main/java/com/snhu/controller/MerkleController.java">src/main/java/com/snhu/controller/MerkleController.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/main/java/com/snhu/merkle/MerkleDemo.java">src/main/java/com/snhu/merkle/MerkleDemo.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/main/java/com/snhu/merkle/MerkleTree.java">src/main/java/com/snhu/merkle/MerkleTree.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/main/java/com/snhu/sslserver/SslServerApplication.java">src/main/java/com/snhu/sslserver/SslServerApplication.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/main/resources/application-tls.properties">src/main/resources/application-tls.properties</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/main/resources/application.properties">src/main/resources/application.properties</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/test/java/com/snhu/merkle/MerkleCoreChecks.java">src/test/java/com/snhu/merkle/MerkleCoreChecks.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/test/java/com/snhu/merkle/MerkleTreeTest.java">src/test/java/com/snhu/merkle/MerkleTreeTest.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/test/java/com/snhu/sslserver/MerkleApiTest.java">src/test/java/com/snhu/sslserver/MerkleApiTest.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Enhanced_ArtemisFinancial/src/test/java/com/snhu/sslserver/SslServerApplicationTests.java">src/test/java/com/snhu/sslserver/SslServerApplicationTests.java</a></li></ul></details><details><summary>Original ArtemisFinancial</summary><ul class="filelist"><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/.classpath">.classpath</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/.gitignore">.gitignore</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/.mvn/wrapper/MavenWrapperDownloader.java">.mvn/wrapper/MavenWrapperDownloader.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/.mvn/wrapper/maven-wrapper.jar">.mvn/wrapper/maven-wrapper.jar</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/.mvn/wrapper/maven-wrapper.properties">.mvn/wrapper/maven-wrapper.properties</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/.project">.project</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/HELP.md">HELP.md</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/README-CS305-ProjectTwo.md">README-CS305-ProjectTwo.md</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/mvnw">mvnw</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/mvnw.cmd">mvnw.cmd</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/pom.xml">pom.xml</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/scripts/keytool-commands.txt">scripts/keytool-commands.txt</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/server.cer">server.cer</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/src/main/java/com/snhu/controller/HashController.java">src/main/java/com/snhu/controller/HashController.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/src/main/java/com/snhu/sslserver/SslServerApplication.java">src/main/java/com/snhu/sslserver/SslServerApplication.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/src/main/resources/application.properties">src/main/resources/application.properties</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/src/test/java/com/snhu/sslserver/SslServerApplicationTests.java">src/test/java/com/snhu/sslserver/SslServerApplicationTests.java</a></li><li><a href="artifacts/CS499_Milestone_Three/Original_ArtemisFinancial/suppressions.xml">suppressions.xml</a></li></ul></details></section><section id="evidence"><h2>Testing and setup evidence</h2><details><summary>Enhanced_ArtemisFinancial/ALGORITHM.md</summary><pre># Algorithm and complexity
+
+## Deterministic rules
+
+This is a custom classroom SHA-256 Merkle scheme, not a Certificate Transparency protocol implementation. It uses different prefixes for leaves and internal nodes, a practice described in RFC 9162 section 2.1.1. The odd-node rule and count commitment below are specific to this project.
+
+- Values are ordered, exact UTF-8 strings. No trimming or Unicode normalization changes the records.
+- Leaf: SHA256(0x00 || UTF8(value)).
+- Internal node: SHA256(0x01 || leftHash || rightHash), joining raw 32-byte hashes.
+- At every odd-width level, duplicate the final hash to create its parent. Node references are shared rather than copying the subtree.
+- Returned root: SHA256(0x02 || countAsFourBigEndianBytes || internalTreeRoot).
+- Empty collection: SHA256(0x02 || four zero bytes), with no internal hash and no valid membership proof.
+- A one-value collection has one leaf, a root commitment, and an empty sibling list.
+
+The count commitment matters: without it, duplicating a final value can make `[A,B,C]` and `[A,B,C,C]` share the same tree hash. Including the count distinguishes the collections. Hash domain prefixes distinguish records from combined child hashes. Proof verification checks both metadata and hashes.
+
+## Construction and proof algorithms
+
+1. Validate limits and hash each record into an immutable leaf node.
+2. `buildLevel` pairs neighboring nodes, creates parents, and recursively calls itself on the smaller parent list until one node remains.
+3. Each node stores its hash, two children, and the original leaf-index range. `collect` follows the target index through one child at each level and adds the sibling hash as recursion returns.
+4. `verify` hashes the supplied record, derives left/right position from index parity, and combines sibling hashes until it reaches the internal root. At an odd duplicated position it also checks that the sibling equals the current hash.
+5. Verification requires exactly the expected path length, valid index/count, and 32-byte hexadecimal hashes. It wraps the result with the count commitment and compares it to the separately supplied trusted root.
+
+## Cost model
+
+Let n be the number of records, B their total UTF-8 byte length, and L the selected record&#x27;s byte length. SHA-256 must read all bytes, so variable-length inputs must be included in the analysis.
+
+| Operation | Time | Additional/storage cost |
+| --- | --- | --- |
+| Build complete tree | O(B + n) | O(n) nodes/hashes plus transient per-value encoding |
+| Read cached root | O(1) | O(1) |
+| Produce proof from cached tree | O(log n) for n &gt; 1 | O(log n) sibling hashes and recursion |
+| Verify one value | O(L + log n) | O(1) working hash state beyond the supplied O(log n) proof |
+| API request that builds and returns proof | O(B + n) | O(n), including the rebuilt tree |
+| Rebuild after a changed record | O(B + n) | O(n); incremental updates are not implemented |
+
+Construction recursion depth is O(log n). Validation and leaf encoding add work proportional to input bytes. Stored hashes are fixed at 32 bytes. The input strings are supplied by the caller and are not retained by the tree.
+
+For n=2^k: n leaf hashes + (n-1) internal hashes + one count commitment = 2n build hashes. A valid proof contains k siblings and uses k+2 hashes (leaf + siblings + commitment). The demo records exact hash-operation counts, not wall-clock speed. SHA-256 calls on records of different byte lengths are not equal-cost timing measurements.
+
+The tree uses more memory than a single checksum but permits verification of one record without sending the full collection after a root and proof exist. It preserves ordering; this is not a sorted tree, a signature, or encryption. A trusted root is essential because an attacker able to replace both data and the trusted root can create a self-consistent replacement tree.
+
+## Sources
+
+Laurie, B., Messeri, E., &amp; Stradling, R. (2021). Certificate Transparency Version 2.0 (RFC 9162), section 2.1.1. https://www.rfc-editor.org/rfc/rfc9162.html
+
+Oracle. (n.d.). MessageDigest. https://docs.oracle.com/javase/8/docs/api/java/security/MessageDigest.html
+
+Spring. (2026, June 25). Spring Boot 3.5.16 available now. https://spring.io/blog/2026/06/25/spring-boot-3-5-16-available-now/
+
+OWASP Dependency-Check. (n.d.). dependency-check:check. https://dependency-check.github.io/DependencyCheck/dependency-check-maven/check-mojo.html
+</pre></details><details><summary>Enhanced_ArtemisFinancial/README.md</summary><pre># Artemis Financial Merkle Tree Enhancement
+
+This CS 499 Milestone Three version extends the CS 305 SHA-256 checksum project with ordered record verification. The original `/hash?data=...` endpoint remains. MerkleTree is plain Java; the web controllers call it without duplicating its algorithm.
+
+## Open it on Windows
+
+1. Extract the submission ZIP into a new folder, for example `G:\CS499\MilestoneThree`.
+2. Open IntelliJ IDEA, choose **Open**, and select this `Enhanced_ArtemisFinancial` folder containing `pom.xml`. In VS Code, choose **File &gt; Open Folder** and select the same folder.
+3. Use **JDK 17 or newer**. Run `java -version` in the terminal to check. Set the IDE&#x27;s project JDK and Maven runner JDK to the same installation. An Android Studio bundled JDK can also run the core script if its `bin` folder is on PATH.
+4. Open the terminal in this folder. Run the core test and demo without downloading Maven dependencies:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run-core-checks.ps1
+```
+
+The policy option applies only to this script process. It does not change the machine&#x27;s permanent policy. Expected: `PASS: 16687 core checks`, then `Original value verifies: true` and `Changed value verifies: false`.
+
+## Run the complete project
+
+With an internet connection for Maven dependencies:
+
+```powershell
+.\mvnw.cmd test
+.\mvnw.cmd spring-boot:run
+```
+
+First use downloads Maven and dependencies. The app binds to **127.0.0.1:8080**, local computer only. This HTTP mode is for the classroom demo. Press Ctrl+C to stop it.
+
+Open `http://127.0.0.1:8080/hash?data=abc` to see the existing checksum feature. Open a second PowerShell terminal and run:
+
+```powershell
+$body = @{ values = @(&#x27;Invoice A:100&#x27;,&#x27;Invoice B:200&#x27;,&#x27;Invoice C:300&#x27;); leafIndex = 1 } | ConvertTo-Json
+$result = Invoke-RestMethod http://127.0.0.1:8080/merkle/proof -Method Post -ContentType &#x27;application/json&#x27; -Body $body
+$result | ConvertTo-Json -Depth 6
+$trustedRoot = $result.root
+$check = @{ value = &#x27;Invoice B:200&#x27;; proof = $result.proof; expectedRoot = $trustedRoot }
+Invoke-RestMethod http://127.0.0.1:8080/merkle/verify -Method Post -ContentType &#x27;application/json&#x27; -Body ($check | ConvertTo-Json -Depth 6)
+$check.value = &#x27;Invoice B:999&#x27;
+Invoke-RestMethod http://127.0.0.1:8080/merkle/verify -Method Post -ContentType &#x27;application/json&#x27; -Body ($check | ConvertTo-Json -Depth 6)
+```
+
+The first verification should return `valid: true`, the changed record `valid: false`. Saving the root from this locally built sample demonstrates the flow. In a real system the verifier must obtain an authentic root independently of an untrusted proof provider.
+
+## Files to review
+
+- `src/main/java/com/snhu/merkle/MerkleTree.java`: nodes, recursive construction/traversal, proof verification, validation.
+- `src/main/java/com/snhu/merkle/MerkleDemo.java`: sample records and operation counts.
+- `src/main/java/com/snhu/controller/MerkleController.java`: root/proof/verify endpoints.
+- `src/test/java/com/snhu/merkle/MerkleCoreChecks.java`: executable algorithm regression checks.
+- `src/test/java/com/snhu/sslserver/MerkleApiTest.java`: HTTP-level checks to run through Maven.
+- `ALGORITHM.md`: rules, complexity, tradeoffs, and references.
+- `TEST_RESULTS.txt`: test results and remaining checks.
+
+## API
+
+`POST /merkle/root`: `{&quot;values&quot;:[&quot;A&quot;,&quot;B&quot;,&quot;C&quot;]}` returns root, leafCount, and buildHashCount.
+
+`POST /merkle/proof`: `{&quot;values&quot;:[&quot;A&quot;,&quot;B&quot;,&quot;C&quot;],&quot;leafIndex&quot;:1}` returns root and proof. Indexes start at zero. A proof has leafIndex, leafCount, and sibling hashes in leaf-to-root order.
+
+`POST /merkle/verify`: `{&quot;value&quot;:&quot;B&quot;,&quot;expectedRoot&quot;:&quot;64 hexadecimal characters&quot;,&quot;proof&quot;:{&quot;leafIndex&quot;:1,&quot;leafCount&quot;:3,&quot;siblings&quot;:[&quot;...&quot;,&quot;...&quot;]}}` returns a validity Boolean. Missing required fields/malformed JSON yields HTTP 400; a well-formed but invalid proof yields false.
+
+The API is stateless. The proof endpoint rebuilds from supplied values each time (linear total work); only `proof(index)` on an already built tree and verification are logarithmic. No database, user authentication, or durable tree storage is provided.
+
+## HTTPS configuration
+
+The enhanced copy removes the old private keystores and hard-coded password. Private keystores are also omitted from the public original copy. Generate a new development keystore outside the project using your JDK:
+
+```powershell
+keytool -genkeypair -alias artemis -keyalg RSA -keysize 3072 -storetype PKCS12 -keystore &quot;$env:USERPROFILE\artemis-dev.p12&quot; -validity 365 -dname &quot;CN=localhost&quot; -ext &quot;SAN=dns:localhost,ip:127.0.0.1&quot;
+$env:ARTEMIS_KEYSTORE = &quot;file:&quot; + ($env:USERPROFILE -replace &#x27;\\&#x27;,&#x27;/&#x27;) + &#x27;/artemis-dev.p12&#x27;
+$secret = Read-Host &#x27;Keystore password&#x27; -AsSecureString
+$env:ARTEMIS_KEYSTORE_PASSWORD = [System.Net.NetworkCredential]::new(&#x27;&#x27;, $secret).Password
+.\mvnw.cmd spring-boot:run &#x27;-Dspring-boot.run.profiles=tls&#x27;
+```
+
+Use `https://localhost:8443/hash?data=abc`. A self-signed development certificate is not automatically trusted by your browser. HTTPS startup and certificate trust still need local verification. Remove the temporary password variable after stopping: `Remove-Item Env:ARTEMIS_KEYSTORE_PASSWORD`. Do not commit the keystore or password.
+
+## Dependency audit and limits
+
+```powershell
+.\mvnw.cmd -Psecurity-audit verify
+```
+
+The explicit audit profile uses Dependency-Check 13.0.0 with a CVSS threshold of 7. An optional NVD API key is read from `NVD_API_KEY`, not stored in the POM. The scan needs internet access and may take time; it has not been run here. The baseline&#x27;s old suppression file is not carried forward.
+
+Spring Boot is pinned to 3.5.16 as an intermediate update from the old 2.2.4 baseline. Its open-source support has ended; this is a local coursework build, not a production deployment. Moving to a supported 4.x generation and rerunning compatibility/security tests remains release work. No claim of vulnerability-free dependencies is made.
+
+Input limits: at most 4096 leaves, 4096 UTF-8 bytes per value, 1 MiB total record data. Empty strings are allowed, nulls and malformed Unicode are rejected. Bounds apply after JSON deserialization; an exposed service would also need transport body-size limits, authentication, and rate limiting. Hashes prove consistency with a trusted root, not identity, authorization, truth of a record, or confidentiality. Repeated equal values can have proofs at multiple valid positions.
+</pre></details><details><summary>Enhanced_ArtemisFinancial/TEST_RESULTS.txt</summary><pre>CS 499 Milestone Three verification — September 27, 2026
+
+EXECUTED AND PASSED
+- Java 17.0.20 compiled MerkleTree, MerkleDemo, and MerkleCoreChecks.
+- Core suite: 16,687 assertions/checks passed. These are checks within an executable regression suite, not 16,687 separate JUnit methods.
+- Independent expected root vectors generated with Python hashlib for empty, single, odd, even, and Unicode collections matched Java output.
+- Every leaf of sizes 1 through 128 verified; modified records failed.
+- Malformed, truncated, extended, and tampered proofs were rejected.
+- Duplicate-value, count-ambiguity, byte-limit, malformed-Unicode, and 4096-leaf cases passed.
+- Demo verified the original sample and rejected its changed value.
+- Operation counts are in evidence/core-check-output.txt.
+
+NOT EXECUTED TO COMPLETION
+- Maven wrapper attempted dependency download; repo.maven.apache.org failed with UnknownHostException in the test environment.
+- Full Spring Boot compilation, JUnit adapter, application context, and MockMvc HTTP tests are therefore not verified here.
+- Local HTTPS startup, certificate trust, and Dependency-Check vulnerability scan have not been run.
+- No user-side run of this new enhancement has been confirmed yet.
+
+NEXT LOCAL CHECKS
+Run scripts/run-core-checks.ps1, then .\mvnw.cmd test and .\mvnw.cmd spring-boot:run.
+Follow README.md to verify true/false API responses and HTTPS configuration.
+Run .\mvnw.cmd -Psecurity-audit verify before describing dependency security results.
+</pre></details></section></main><footer><div class="wrap">CJ Mavrogeorge · SNHU Computer Science · CS 499 ePortfolio</div></footer></body></html>

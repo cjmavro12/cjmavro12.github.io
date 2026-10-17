@@ -1,0 +1,15 @@
+PASS: 16687 core checks
+Root: 7dc7b67c0b915e6eff5f136ca5f43695c6ef079c9567dcf838e3951d5087cd54
+Leaf count: 3
+Proof siblings: [da2e23610ec00ec02ecc574bcd548245ab2704b69f95396f6c385dbd3819ff17, 737f296f38aecc8151a7193a6ca870a3d51d68ae03427f2ffa18beee36cd5c43]
+Original value verifies: true
+Changed value verifies: false
+n,build_sha256_calls,proof_siblings,verify_sha256_calls
+1,2,0,2
+2,4,1,3
+3,7,2,4
+8,16,3,5
+64,128,6,8
+256,512,8,10
+1024,2048,10,12
+4096,8192,12,14

@@ -1,0 +1,25 @@
+test_live_crud_aggregation_and_explain (test_integration.LiveMongoTests.test_live_crud_aggregation_and_explain) ... skipped 'TEST_MONGODB_URI not set; live MongoDB unverified'
+test_aggregations (test_shelter.ShelterTests.test_aggregations) ... ok
+test_callback_data (test_shelter.ShelterTests.test_callback_data) ... ok
+test_crud_one_record (test_shelter.ShelterTests.test_crud_one_record) ... ok
+test_dash_routes_and_callback (test_shelter.ShelterTests.test_dash_routes_and_callback) ... /workspace/scratch/0eede059edc5/milestone4_deps/dash/development/base_component.py:159: DeprecationWarning: 
+The dash_table.DataTable will be removed from the builtin dash components in a future major version.
+We recommend using dash-ag-grid as a replacement. Install with `pip install dash[ag-grid]`.
+
+  self._validate_deprecation()
+ok
+test_database_errors_distinct_from_empty (test_shelter.ShelterTests.test_database_errors_distinct_from_empty) ... database_operation
+ok
+test_indexes (test_shelter.ShelterTests.test_indexes) ... ok
+test_map_named_fields (test_shelter.ShelterTests.test_map_named_fields) ... ok
+test_no_bulk_mutations (test_shelter.ShelterTests.test_no_bulk_mutations) ... ok
+test_pagination (test_shelter.ShelterTests.test_pagination) ... ok
+test_query_injection (test_shelter.ShelterTests.test_query_injection) ... ok
+test_rescue_filters (test_shelter.ShelterTests.test_rescue_filters) ... ok
+test_settings (test_shelter.ShelterTests.test_settings) ... ok
+test_validation (test_shelter.ShelterTests.test_validation) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.215s
+
+OK (skipped=1)
